@@ -1,7 +1,3 @@
-Here is the comprehensive, professional README.md for your project. I have structured it to align with the PRPO course guidelines, emphasizing the "smart, connected" nature of the microservices and your specific infrastructure choices.
-
-You can copy the content below and save it as README.md in your project root.
-
 Sprouty — Intelligent Plant Companion 🌿
 Sprouty is an AI-driven microservices platform designed to bridge the gap between IoT environmental data and botanical care. Developed as a solo project for the Software Development Processes (PRPO) 2025/2026 course at the University of Ljubljana, Faculty of Computer and Information Science (FRI).
 
