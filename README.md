@@ -1,1 +1,98 @@
-# .github
+Here is the comprehensive, professional README.md for your project. I have structured it to align with the PRPO course guidelines, emphasizing the "smart, connected" nature of the microservices and your specific infrastructure choices.
+
+You can copy the content below and save it as README.md in your project root.
+
+Sprouty — Intelligent Plant Companion 🌿
+Sprouty is an AI-driven microservices platform designed to bridge the gap between IoT environmental data and botanical care. Developed as a solo project for the Software Development Processes (PRPO) 2025/2026 course at the University of Ljubljana, Faculty of Computer and Information Science (FRI).
+
+📖 Table of Contents
+Vision & MVP Scope
+
+System Architecture
+
+PRPO Requirement Fulfillment
+
+Cloud Infrastructure & DevOps
+
+API Documentation
+
+Future Roadmap
+
+🌟 Vision & MVP Scope
+The initial design (as detailed in prijava2.pdf) envisioned a holistic plant ecosystem. To ensure a high-quality delivery within the course timeline, the MVP focuses on the critical "Sense-Identify-Notify" loop.
+
+Current MVP Features:
+AI Plant Identification: High-accuracy species recognition and care instruction generation.
+
+Live Telemetry: Real-time monitoring of soil and atmosphere.
+
+Proactive Alerts: Threshold-based notifications to prevent plant stress.
+
+Secure Multi-tenancy: Isolated user gardens and encrypted auth.
+
+🏗 System Architecture
+The project follows a modern Polyglot Microservices pattern. Each service is decoupled, allowing for independent scaling and maintenance.
+
+The Connected Service Mesh:
+Gateway Service: The "Brain." It handles JWT Validation and routes traffic. It prevents unauthorized access to sensitive plant data.
+
+User Service: Integrated with Firebase Auth to manage user identities and profiles.
+
+Plant Service: The "Botanist." Combines Pl@ntNet API (visual recognition) with OpenAI GPT-4o to generate human-readable care tips.
+
+Sensor Service: The "Nervous System." Ingests data from IoT devices, comparing live metrics against the thresholds defined in the Plant Service.
+
+Notification Service: The "Voice." Dispatches push notifications via FCM when the Sensor Service detects anomalies.
+
+✅ PRPO Requirement Fulfillment
+This project systematically addresses the PRPO Navodila requirements through an integrated technical approach:
+
+Microservices Orchestration: Instead of unconnected modules, Sprouty uses a Gateway pattern to ensure a single entry point for the Android client.
+
+Data Persistence: Uses Google Cloud Firestore (NoSQL) for flexible plant profiles. I have manually optimized Firestore Indexes to ensure O(1) query performance for large user collections.
+
+Health & Resilience: Every service implements Spring Boot Actuator (/liveness, /readiness). This allows the Kubernetes control plane to automatically restart unhealthy pods, fulfilling the "Reliability" criteria of the course.
+
+External Integration: Demonstrates advanced API consumption by chaining two external AI services in a single identification pipeline.
+
+☁️ Cloud Infrastructure & DevOps
+The project is architected for speed and cost-efficiency:
+
+Deployment: Hosted on GKE Autopilot. This removes the need for manual node management while ensuring the app scales automatically based on CPU/RAM load.
+
+Regional Optimization: All resources (GKE, Firestore, Firebase Storage) are pinned to europe-west4 (Netherlands). This minimizes latency for users in Slovenia and reduces inter-region data egress costs.
+
+CI/CD Pipeline: 1. GitHub Actions triggers on every push to main. 2. Automatic Maven builds and unit testing. 3. Docker images are built and pushed to Google Artifact Registry. 4. Kubernetes manifests are applied, performing a zero-downtime rolling update.
+
+📖 API Documentation
+Full technical specifications of the internal API are available via Swagger/OpenAPI.
+
+Gateway (Aggregated): http://<external-ip>/swagger-ui.html
+
+Plant Service Specs: http://plant-service:8082/v3/api-docs
+
+User Service Specs: http://user-service:8081/v3/api-docs
+
+🚀 Future Roadmap
+The architecture is already "future-proofed" for the remaining features of the original proposal:
+
+Lifecycle Service: Building time-lapse videos from sensor-sent photos to track growth patterns scientifically.
+
+Shop Service: An intelligent marketplace recommending vases, soil, and fertilizers specific to the plants the user actually owns.
+
+Community Service: A social platform for sharing time-lapses and care success stories once the user base scales.
+
+🛠 Local Setup
+To run a local instance of the Sprouty backend:
+
+Clone the organization repository: git clone https://github.com/sprouty-org/sprouty-main
+
+Install dependencies: mvn clean install
+
+Configure your firebase-key.json in the root of each service.
+
+Apply Kubernetes configurations: kubectl apply -f k8s/
+
+Author: David Muhič
+
+Organization: Team Sprouty
