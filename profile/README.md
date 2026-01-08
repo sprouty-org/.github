@@ -1,83 +1,157 @@
-Sprouty — Intelligent Plant Companion
+# Sprouty — Smart Plant Companion
 
-Sprouty is an AI-driven microservices platform designed to bridge the gap between IoT environmental data and botanical care. Developed as a solo project for the Software Development Processes (PRPO) 2025/2026 course at the University of Ljubljana, Faculty of Computer and Information Science (FRI).
+## Sprouty is a specialized AI-driven microservices platform engineered to bridge the gap between IoT environmental telemetry and botanical care. This project was developed as a solo endeavor for the Software Development Processes (PRPO) 2025/2026 course at the University of Ljubljana, Faculty of Computer and Information Science (FRI).
 
-Table of Contents
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Vision & MVP Scope
+## Table of Contents
+#### 1. Project Vision & MVP Scope
 
-System Architecture
+#### 2. System Architecture
 
-Cloud Infrastructure & DevOps
+#### 3. Hardware & Telemetry
 
-API Documentation
+#### 4. Cloud Infrastructure & DevOps
 
-Future Roadmap
+#### 5. API Documentation
 
-🌟 Vision & MVP Scope
-The initial design envisioned an interconnected plant ecosystem. To ensure a high-quality delivery within the course timeline, the MVP/current state of the project focuses on the critical "Sense-Identify-Notify" loop.
+#### 6. Future Roadmap
 
-Current MVP Features:
-AI Plant Identification: High-accuracy species recognition and care instruction generation.
+#### 7. Local Development
 
-Live plant environment data: Real-time monitoring of soil and atmosphere using ESP32-S3 microcontroller with a DHT11 sensor for air humidity and temperature and an analog soil mositure sensor.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Plant care alerts: Threshold-based notifications to improve plant's survivability and wellbeing.
+## Project Vision & MVP Scope
 
-Secure accounts: Isolated user gardens and encrypted authorization using .
+#### The original project design outlined an interconnected plant ecosystem. To maintain a high standard of reliability within the course timeline, the MVP focuses on a robust "Sense-Identify-Notify" architectural loop.
 
-🏗 System Architecture
-The project has a microservicee architecture - each service is decoupled, allowing for independent scaling and maintenance.
+### Core Functionalities
 
-The Connected Service Mesh:
-Gateway Service: It handles JWT Validation and routes traffic. It prevents unauthorized access to sensitive plant data.
+#### Automated Identification Pipeline:
+High-accuracy species recognition via multi-stage API processing pipeline using Pl@ntNet for species recognition and OpenAI to generate custom plant-species care details. This pipeline also serves as a dynamic botanical library, expanding the system's global database whenever a previously undocumented species is added to a user’s garden.
 
-User Service: Integrated with Firebase Auth to manage user identities and profiles.
+#### Environmental Telemetry:
+Real-time data ingestion of soil and atmospheric conditions.
 
-Plant Service: Combines Pl@ntNet API (visual recognition) with OpenAI GPT-3.5 turbo to generate human-readable care tips.
+#### Intelligent Alerting:
+Event-driven triggers based on species-specific thresholds to maximize plant longevity and health.
 
-Sensor Service: Ingests data from IoT devices, comparing live metrics against the thresholds defined in the Plant Service.
+#### Identity & Access Management (IAM):
+Implements a Token-Exchange Architecture. The Android client performs primary authentication via the Firebase SDK (OIDC IdP) to obtain an idToken. This is exchanged at the User Service for a locally-signed, stateless JWT at login/registering. All subsequent requests are authorized via an Authorization header, which the Gateway validates and maps to the user’s unique Firebase UID for secure Firestore queries.
 
-Notification Service: Dispatches push notifications via FCM when the Sensor Service detects anomalies.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-☁️ Cloud Infrastructure & DevOps
-The project is architected for speed and cost-efficiency:
+## System Architecture
 
-Deployment: Hosted on GKE Autopilot. This removes the need for manual node management while ensuring the app scales automatically based on CPU/RAM load.
+#### The platform utilizes a decoupled Microservices Architecture, enabling independent scalability, fault isolation, and specialized data handling.
 
-Regional Optimization: All resources (GKE, Firestore, Firebase Storage) are pinned to europe-west4 (Netherlands). This minimizes latency for users in Slovenia and reduces inter-region data egress costs.
+### Service Definitions
 
-CI/CD Pipeline: 1. GitHub Actions triggers on every push to main. 2. Automatic Maven builds and unit testing. 3. Docker images are built and pushed to Google Artifact Registry. 4. Kubernetes manifests are applied, performing a zero-downtime rolling update.
+#### 1. Gateway:
+Acts as the single entry point. It handles JWT Validation and dynamic routing to downstream services using GKE's LoadBalancer.
 
-📖 API Documentation
-Full technical specifications of the internal API are available via Swagger/OpenAPI.
+#### 2. User Service:
+Manages user identity and profile metadata, integrated with Firebase Authentication for secure authorization flows.
 
-Gateway (Aggregated): http://<external-ip>/swagger-ui.html
+#### 3. Plant Service:
+Processes botanical logic. It chains the Pl@ntNet API (visual identification) with OpenAI GPT-3.5 Turbo to generate custom plant information data.
 
-Plant Service Specs: http://plant-service:8082/v3/api-docs
+#### 4. Sensor Service:
+The telemetry ingestion hub. It evaluates live ESP32-S3-CAM metrics against thresholds stored in the botanical database.
 
-User Service Specs: http://user-service:8081/v3/api-docs
+#### 5. Notification Service:
+It utilizes Firebase Cloud Messaging (FCM) to push alerts to the Android client when environmental anomalies are detected.
 
-🚀 Future Roadmap
-The architecture is already "future-proofed" for the remaining features of the original proposal:
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Lifecycle Service: Building time-lapse videos from sensor-sent photos to track growth patterns scientifically.
+## Hardware & Telemetry
 
-Shop Service: An intelligent marketplace recommending vases, soil, and fertilizers specific to the plants the user actually owns.
+#### The "Sense" layer of the project is powered by custom IoT hardware:
 
-Community Service: A social platform for sharing time-lapses and care success stories once the user base scales.
+#### Microcontroller:
+ESP32-S3-CAM.
 
-🛠 Local Setup
-To run a local instance of the Sprouty backend:
+#### Atmospheric Sensors:
+DHT11 for ambient air temperature and humidity.
 
-Clone the organization repository: git clone https://github.com/sprouty-org/sprouty-main
+#### Soil Sensors:
+Analog soil moisture probes.
 
-Install dependencies: mvn clean install
+#### Connectivity:
+Devices utilize a secure Wi-Fi handshake to transmit telemetry and image payloads to the backend /sensors ingestion endpoint.
 
-Configure your firebase-key.json in the root of each service.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-Apply Kubernetes configurations: kubectl apply -f k8s/
+## Cloud Infrastructure & DevOps
+
+#### The infrastructure is optimized for high availability, low latency, and operational cost-efficiency.
+
+### Deployment & Orchestration
+
+#### Platform:
+GKE Autopilot. This allows for managed pod orchestration, ensuring the cluster scales dynamically based on CPU and memory demand.
+
+#### Regionality:
+All resources—including GKE, Cloud Firestore and Firebase Storage—are localized in the europe-west4 (Netherlands) region to minimize latency for European users and reduce cross-region egress fees.
+
+### CI/CD Pipeline
+
+#### Source Control:
+GitHub repository with branch protection.
+
+#### Automation:
+GitHub Actions workflows triggered on master branch commits.
+
+#### Build:
+Automated Maven lifecycle management and unit testing.
+
+#### Containerization:
+Docker images are built, tagged, and pushed to Google Artifact Registry.
+
+#### Continuous Deployment:
+Kubernetes manifests are updated via kubectl, initiating a Zero-Downtime Rolling Update.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+## API Documentation
+
+The internal service mesh is fully documented using the OpenAPI 3.0 specification.
+
+#### SWAGGER UI:
+http://<EXTERNAL_IP>/swagger-ui.html
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Future Roadmap
+
+#### The system's modular design is prepared for the following service expansions:
+
+#### Lifecycle Service:
+Generating time-lapse growth videos from sensor-captured imagery for scientific logging and user engagement.
+
+#### Shop Service:
+A marketplace providing plant-specific products (vases, fertilizers, soil and other plant care accessories) based on the user's current garden inventory.
+
+#### Community Service:
+A social layer for sharing growth milestones and care tips once the user base reaches a high enough number.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Local Development
+
+#### To initialize a local development environment:
+
+#### Clone the repository:
+git clone https://github.com/sprouty-org/sprouty-main
+
+#### Build the artifacts:
+mvn clean install
+
+#### Kubernetes Deployment:
+make sure you go to the project's root directory and then
+
+kubectl apply -f kubernetes/infrastructure.yaml
+
+kubectl apply -f kubernetes/scaling.yaml
 
 Author: David Muhič
-
-Organization: Team Sprouty
