@@ -162,18 +162,23 @@ A social layer for sharing growth milestones and care tips once the user base re
 
 #### To initialize a local development environment:
 
-#### Clone the repository:
-git clone https://github.com/sprouty-org/sprouty-main
+#### For Android:
+git clone https://github.com/sprouty-org/android
+The android app is accessible at https://github.com/sprouty-org/android/releases/tag/v1.0.0
 
-#### Build the artifacts:
+#### For SpringBoot 
+git clone https://github.com/sprouty-org/backend-java
+Build the artifacts:
 mvn clean install
+
+#### For ESP32:
+git clone https://github.com/sprouty-org/esp32
+
 
 #### Kubernetes Deployment:
 make sure you go to the project's root directory and then
 
-kubectl apply -f kubernetes/infrastructure.yaml
-
-kubectl apply -f kubernetes/scaling.yaml
+kubectl apply -f kubernetes/
 
 Note: Deployment requires pre-configured Kubernetes Secrets (app-secrets, firebase-key) for API connectivity and database access.
 
