@@ -1,8 +1,10 @@
 # Sprouty — Smart Plant Companion
 
+Tech Stack & Tools
+
 ## Sprouty is a specialized AI-driven microservices platform engineered to bridge the gap between IoT environmental telemetry and botanical care. This project was developed as a solo endeavor for the Software Development Processes (PRPO) 2025/2026 course at the University of Ljubljana, Faculty of Computer and Information Science (FRI).
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
 
 ## Table of Contents
 #### 1. Project Vision & MVP Scope
@@ -19,7 +21,7 @@
 
 #### 7. Local Development
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
 
 ## Project Vision & MVP Scope
 
@@ -39,7 +41,7 @@ Event-driven triggers based on species-specific thresholds to maximize plant lon
 #### Identity & Access Management (IAM):
 Implements a Token-Exchange Architecture. The Android client performs primary authentication via the Firebase SDK (OIDC IdP) to obtain an idToken. This is exchanged at the User Service for a locally-signed, stateless JWT at login/registering. All subsequent requests are authorized via an Authorization header, which the Gateway validates and maps to the user’s unique Firebase UID for secure Firestore queries.
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
 
 ## System Architecture
 
@@ -62,7 +64,10 @@ The telemetry ingestion hub. It evaluates live ESP32-S3-CAM metrics against thre
 #### 5. Notification Service:
 It utilizes Firebase Cloud Messaging (FCM) to push alerts to the Android client when environmental anomalies are detected.
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#### Data persistence:
+Uses a NoSQL approach with Google Cloud Firestore. Interaction is handled via the Firebase SDK acting as an Object Document Mapper (ODM) for seamless Java object serialization.
+
+---
 
 ## Hardware & Telemetry
 
@@ -80,7 +85,7 @@ Analog soil moisture probes.
 #### Connectivity:
 Devices utilize a secure Wi-Fi handshake to transmit telemetry and image payloads to the backend /sensors ingestion endpoint.
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
 
 ## Cloud Infrastructure & DevOps
 
@@ -93,6 +98,9 @@ GKE Autopilot. This allows for managed pod orchestration, ensuring the cluster s
 
 #### Regionality:
 All resources—including GKE, Cloud Firestore and Firebase Storage—are localized in the europe-west4 (Netherlands) region to minimize latency for European users and reduce cross-region egress fees.
+
+#### Health:
+Leverages Spring Boot Actuator integrated with Kubernetes Liveness and Readiness probes to ensure automated pod recovery and traffic routing only to healthy instances.
 
 ### CI/CD Pipeline
 
@@ -111,16 +119,16 @@ Docker images are built, tagged, and pushed to Google Artifact Registry.
 #### Continuous Deployment:
 Kubernetes manifests are updated via kubectl, initiating a Zero-Downtime Rolling Update.
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
  
 ## API Documentation
 
-The internal service mesh is fully documented using the OpenAPI 3.0 specification.
+The Microservice Ecosystem is fully documented using the OpenAPI 3.0 specification.
 
 #### SWAGGER UI:
-http://<EXTERNAL_IP>/swagger-ui.html
+http://sprouty.duckdns.org/swagger-ui.html
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
 
 ## Future Roadmap
 
@@ -135,7 +143,7 @@ A marketplace providing plant-specific products (vases, fertilizers, soil and ot
 #### Community Service:
 A social layer for sharing growth milestones and care tips once the user base reaches a high enough number.
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---
 
 ## Local Development
 
@@ -153,5 +161,7 @@ make sure you go to the project's root directory and then
 kubectl apply -f kubernetes/infrastructure.yaml
 
 kubectl apply -f kubernetes/scaling.yaml
+
+Note: Deployment requires pre-configured Kubernetes Secrets (app-secrets, firebase-key) for API connectivity and database access.
 
 Author: David Muhič
